@@ -3,12 +3,17 @@ import axios from 'axios';
 import qs from 'qs';
 import {Buffer} from 'buffer';
 import './App.css';
+import ArtistCards from './ArtistCards';
+import AlbumCards from './AlbumCards';
 
 function App() {
   const [artist, setArtist] = useState('');
   const [artistResults, setArtistResults] = useState([]);
+  const [albumResults, setAlbumResults] = useState([]);
 
-  const getAuthorized = () => {
+  type SearchFunction = (token: string, id: string) => void;
+
+  const getAuthorized = (search: SearchFunction, id: string) => {
     const data = { grant_type: "client_credentials" };
     const options = {
       method: "POST",
@@ -23,11 +28,11 @@ function App() {
     };
     axios(options)
       .then((response) => {
-        searchArtists(response.data.access_token);
+        search(response.data.access_token, id);
       })
   }
 
-  const searchArtists = (token: string) => {
+  const searchArtists = (token: string, id: string) => {
     axios.get("https://api.spotify.com/v1/search", {
       headers: {
         Authorization: `Bearer ${token}`
@@ -38,8 +43,18 @@ function App() {
       }
     })
       .then((response) => {
-        console.log(response.data.artists.items);
         setArtistResults(response.data.artists.items);
+      })
+  }
+
+  const searchArtistAlbums = (token: string, id: string) => {
+    axios.get(`https://api.spotify.com/v1/artists/${id}/albums`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((response) => {
+        setAlbumResults(response.data.items);
       })
   }
 
@@ -50,7 +65,7 @@ function App() {
 
   function handleClick(event: React.SyntheticEvent<EventTarget>) {
     event.preventDefault();
-    getAuthorized();
+    getAuthorized(searchArtists, "");
   }
 
   return (
@@ -61,14 +76,17 @@ function App() {
         <input id="artist" type="text" onChange={handleChange} />
         <input type="submit" value="Search" />
       </form>
-      {artistResults.length > 0 ? artistResults.map((artist: any) => {
-        return (
-          <div>
-            <div>{artist.name}</div>
-            {artist.images.length > 0 ? <img src={artist.images[0].url} alt="" /> : <div>No images</div>}
+      {artistResults.length > 0 ? <div className="artist-cards">
+        <ArtistCards setArtistResults={setArtistResults} getAuthorized={getAuthorized} searchArtistAlbums={searchArtistAlbums} artistResults={artistResults} />
+      </div> : null}
+      { albumResults.length > 0 ?
+        <div>
+          <h2>Albums</h2>
+          <div className="album-cards">
+            <AlbumCards albumResults={albumResults} />
           </div>
-        )
-      }) : null}
+        </div>
+      : null }
     </div>
   );
 }
