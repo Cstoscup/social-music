@@ -3,8 +3,10 @@ import axios from 'axios';
 import qs from 'qs';
 import {Buffer} from 'buffer';
 import './App.css';
-import ArtistCards from './ArtistCards';
+import Artists from './Artists';
 import AlbumCards from './AlbumCards';
+import Search from './Search';
+import { Routes, Route } from "react-router-dom"
 
 function App() {
   const [artist, setArtist] = useState('');
@@ -28,6 +30,7 @@ function App() {
     };
     axios(options)
       .then((response) => {
+        console.log(response);
         search(response.data.access_token, id);
       })
   }
@@ -38,7 +41,7 @@ function App() {
         Authorization: `Bearer ${token}`
       },
       params: {
-        q: artist,
+        q: id,
         type: "artist"
       }
     })
@@ -58,25 +61,16 @@ function App() {
       })
   }
 
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-    setArtist(event.target.value);
-  }
-
-  function handleClick(event: React.SyntheticEvent<EventTarget>) {
-    event.preventDefault();
-    getAuthorized(searchArtists, "");
-  }
-
   return (
     <div className="App">
       <h1>Top Grooves</h1>
-      <form onSubmit={handleClick}>
-        <label htmlFor="artist">Search for an artist: </label>
-        <input id="artist" type="text" onChange={handleChange} />
-        <input type="submit" value="Search" />
-      </form>
-      {artistResults.length > 0 ? <div className="artist-cards">
+
+      <Routes>
+        <Route path="/" element={<Search setArtist={setArtist} getAuthorized={getAuthorized} searchArtists={searchArtists} />} />
+        <Route path="/artist" element={<Artists getAuthorized={getAuthorized} searchArtists={searchArtists} artistResults={artistResults} setArtistResults={setArtistResults} setArtist={setArtist} />} />
+      </Routes>
+
+      {/* {artistResults.length > 0 ? <div className="artist-cards">
         <ArtistCards setArtistResults={setArtistResults} getAuthorized={getAuthorized} searchArtistAlbums={searchArtistAlbums} artistResults={artistResults} />
       </div> : null}
       { albumResults.length > 0 ?
@@ -86,7 +80,7 @@ function App() {
             <AlbumCards albumResults={albumResults} />
           </div>
         </div>
-      : null }
+      : null } */}
     </div>
   );
 }

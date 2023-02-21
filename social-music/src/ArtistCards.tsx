@@ -10,6 +10,22 @@ function ArtistCards(props: any) {
     props.getAuthorized(props.searchArtistAlbums, id);
   }
 
+  const formatFollowers =  (count: number) => {
+    var formatted: string = "";
+    var countStr: string = count.toString();
+    var letterCount: number = 0;
+    for (var i = countStr.length - 1; i >= 0; i--) {
+      letterCount += 1;
+      if (countStr.length > 3 && i !== 0 && letterCount % 3 === 0) {
+        formatted = ',' + countStr[i] + formatted;
+      } else {
+        formatted = countStr[i] + formatted;
+      }
+    }
+
+    return formatted;
+  }
+
   return (
     artists.map((artist: any, index: number) => {
       if (artist.images.length > 0) {
@@ -18,7 +34,7 @@ function ArtistCards(props: any) {
             <img className='artist-image' src={artist.images[0].url} alt="" />
             <div>{artist.name}</div>
             <div>{artist.genres.join(", ")}</div>
-            <div>Followers: {artist.followers.total}</div>
+            <div>{formatFollowers(artist.followers.total)} followers</div>
           </div>
         )
       }
