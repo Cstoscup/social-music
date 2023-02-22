@@ -4,14 +4,16 @@ import qs from 'qs';
 import {Buffer} from 'buffer';
 import './App.css';
 import Artists from './Artists';
-import AlbumCards from './AlbumCards';
+import Albums from './Albums';
+import Songs from './Songs';
 import Search from './Search';
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, useNavigate } from "react-router-dom"
 
 function App() {
-  const [artist, setArtist] = useState('');
+  const [artist, setArtist] = useState<string>('');
   const [artistResults, setArtistResults] = useState([]);
   const [albumResults, setAlbumResults] = useState([]);
+  const [songResults, setSongResults] = useState([]);
 
   type SearchFunction = (token: string, id: string) => void;
 
@@ -30,7 +32,6 @@ function App() {
     };
     axios(options)
       .then((response) => {
-        console.log(response);
         search(response.data.access_token, id);
       })
   }
@@ -61,26 +62,31 @@ function App() {
       })
   }
 
+  const searchAlbumSongs = (token: string, id: string) => {
+    axios.get(`https://api.spotify.com/v1/albums/${id}/tracks`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((response) => {
+        console.log(response);
+        setSongResults(response.data.items);
+      })
+  }
+
+  const navigate = useNavigate();
+
   return (
     <div className="App">
-      <h1>Top Grooves</h1>
+      <h1 className='title' onClick={() => { navigate('/'); }}>Top Grooves</h1>
 
       <Routes>
         <Route path="/" element={<Search setArtist={setArtist} getAuthorized={getAuthorized} searchArtists={searchArtists} />} />
         <Route path="/artist" element={<Artists getAuthorized={getAuthorized} searchArtists={searchArtists} artistResults={artistResults} setArtistResults={setArtistResults} setArtist={setArtist} />} />
+        <Route path="/albums" element={<Albums getAuthorized={getAuthorized} searchArtistAlbums={searchArtistAlbums} albumResults={albumResults} setAlbumResults={setAlbumResults} />} />
+        <Route path="/songs" element={<Songs getAuthorized={getAuthorized} searchAlbumSongs={searchAlbumSongs} songResults={songResults} setSongResults={setSongResults} />} />
       </Routes>
 
-      {/* {artistResults.length > 0 ? <div className="artist-cards">
-        <ArtistCards setArtistResults={setArtistResults} getAuthorized={getAuthorized} searchArtistAlbums={searchArtistAlbums} artistResults={artistResults} />
-      </div> : null}
-      { albumResults.length > 0 ?
-        <div>
-          <h2>Albums</h2>
-          <div className="album-cards">
-            <AlbumCards albumResults={albumResults} />
-          </div>
-        </div>
-      : null } */}
     </div>
   );
 }

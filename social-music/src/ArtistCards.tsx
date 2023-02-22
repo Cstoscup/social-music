@@ -1,13 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './App.css'
 
 function ArtistCards(props: any) {
   const artists = props.artistResults;
+  const navigate = useNavigate();
 
-  const handleClick = (event: any, id: string) => {
+  const handleClick = (event: any, artist: any) => {
     event.preventDefault();
-    props.setArtistResults([]);
-    props.getAuthorized(props.searchArtistAlbums, id);
+    navigate(`/albums?id=${artist.id}&name=${artist.name}`);
   }
 
   const formatFollowers =  (count: number) => {
@@ -30,7 +31,7 @@ function ArtistCards(props: any) {
     artists.map((artist: any, index: number) => {
       if (artist.images.length > 0) {
         return (
-          <div className='artist-card' key={index} onClick={(e) => { handleClick(e, artist.id) }}>
+          <div className='artist-card' key={index} onClick={(e) => { handleClick(e, artist) }}>
             <img className='artist-image' src={artist.images[0].url} alt="" />
             <div>{artist.name}</div>
             <div>{artist.genres.join(", ")}</div>

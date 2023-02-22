@@ -4,6 +4,10 @@
   font-family: 'Syne Mono', monospace;
 }
 
+.title:hover {
+  cursor: pointer;
+}
+
 .artist-cards, .album-cards {
   display: flex;
   flex-wrap: wrap;
@@ -28,4 +32,8 @@
   height: 250px;
   border-radius: 10px 10px 0 0;
   object-fit: cover;
+}
+
+.album-name {
+  width: 300px;
 }
