@@ -8,7 +8,7 @@ function AlbumCard(props: any) {
 
   const handleClick = (event: any, album: any) => {
     event.preventDefault();
-    navigate(`/songs?id=${album.id}&name=${album.name}`);
+    navigate(`/songs?id=${album.id}&name=${album.name}&token=${props.token}`);
   }
 
   return (

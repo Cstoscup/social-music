@@ -1,9 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
+import SpotifyPlayer from 'react-spotify-web-playback'
 
 function SongCard(props: any) {
-  console.log(props.song);
+  const [playSong, setPlaySong] = useState(false);
+
   return (
-    <div>{props.song.name}</div>
+    <div>
+      <div onClick={() => {setPlaySong(prev => !prev)}}>{props.song.name}</div>
+      { playSong ? <SpotifyPlayer token={props.token} uris={[props.song.uri]} />: null}
+    </div>
+
   )
 }
 

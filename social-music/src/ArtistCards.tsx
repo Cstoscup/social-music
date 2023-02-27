@@ -8,7 +8,7 @@ function ArtistCards(props: any) {
 
   const handleClick = (event: any, artist: any) => {
     event.preventDefault();
-    navigate(`/albums?id=${artist.id}&name=${artist.name}`);
+    navigate(`/albums?id=${artist.id}&name=${artist.name}&token=${props.token}`);
   }
 
   const formatFollowers =  (count: number) => {

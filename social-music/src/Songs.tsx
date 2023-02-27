@@ -3,13 +3,16 @@ import SongCard from './SongCard';
 
 function Songs(props: any) {
   const [name, setName] = useState<string | null>("");
+  const [testToken, setTestToken] = useState<string | null>("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     const name = params.get('name');
+    const tokenURL = params.get('token');
+    setTestToken(tokenURL);
     setName(name);
-    props.getAuthorized(props.searchAlbumSongs, id);
+    props.searchAlbumSongs(tokenURL, id);
   }, [])
 
   return (
@@ -18,7 +21,7 @@ function Songs(props: any) {
       <div className='song-cards'>
         {props.songResults.map((song: any, index: number) => {
           return (
-            <SongCard song={song} key={index} />
+            <SongCard song={song} key={index} token={testToken} />
           )
         })}
       </div>

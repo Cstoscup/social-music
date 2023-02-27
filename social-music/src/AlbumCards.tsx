@@ -5,7 +5,7 @@ function AlbumCards(props: any) {
   const albums = props.albumResults;
   return (
     albums.map((album: any, index: number) => {
-      return <AlbumCard album={album} index={index} />
+      return <AlbumCard token={props.token} album={album} index={index} />
     })
   )
 }

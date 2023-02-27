@@ -8,6 +8,8 @@ function Albums(props: any) {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     const name = params.get('name');
+    const tokenURL = params.get('token');
+    props.setToken(tokenURL);
     if (name !== null) {
       if (name[name.length - 1] === 's') {
         setNamePos(name + "'");
@@ -16,14 +18,14 @@ function Albums(props: any) {
       }
     }
 
-    props.getAuthorized(props.searchArtistAlbums, id);
+    props.searchArtistAlbums(tokenURL, id);
   }, []);
 
   return (
     <div>
       <h3>{namePos} Albums</h3>
       <div className="album-cards">
-        <AlbumCards albumResults={props.albumResults} />
+        <AlbumCards token={props.token} albumResults={props.albumResults} />
       </div>
     </div>
   )

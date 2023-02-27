@@ -7,15 +7,17 @@ function Artists(props: any) {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const name = params.get('name');
+    const tokenURL = params.get('token');
+    props.setToken(tokenURL);
     setSearchTerm(name);
-    props.getAuthorized(props.searchArtists, name);
+    props.searchArtists(tokenURL, name);
   }, []);
 
   return (
     <div>
       <h3>Artists matching '{searchTerm}'</h3>
       <div className="artist-cards">
-        <ArtistCards setArtistResults={props.setArtistResults} getAuthorized={props.getAuthorized} searchArtistAlbums={props.searchArtistAlbums} artistResults={props.artistResults} setArtist={props.setArtist} />
+        <ArtistCards token={props.token} setArtistResults={props.setArtistResults} getAuthorized={props.getAuthorized} searchArtistAlbums={props.searchArtistAlbums} artistResults={props.artistResults} setArtist={props.setArtist} />
       </div>
     </div>
 
